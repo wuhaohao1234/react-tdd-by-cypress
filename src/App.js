@@ -1,23 +1,47 @@
-import logo from './logo.svg';
+import React, {useState} from 'react';
 import './App.css';
 
+const NewMessageForm = (prop) => {
+  const [inputText, setInputText] = useState('')
+  return (
+    <div>
+      <input
+        type="text" 
+        data-testid="messageText"
+        value={inputText}
+        onChange={e => {setInputText(e.target.value)}}
+      />
+      <button
+        data-testid="sendButton"
+        onClick={() => {
+          prop.send(inputText)
+          setInputText('')
+        }}
+      >
+        click
+      </button>
+    </div>
+  )
+}
+
+const NewMessageList = (prop) => {
+  const {data} = prop
+  return (
+    <ul>
+      {data.map(item => (<li key={item} >{item}</li>))}
+    </ul>
+  )
+}
+
 function App() {
+  const [message, setMessage] = useState([])
+  const handleSend = newMessage => {
+    setMessage([newMessage, ...message])
+  }
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <NewMessageForm send={handleSend} />
+      <NewMessageList data={message} />
     </div>
   );
 }
